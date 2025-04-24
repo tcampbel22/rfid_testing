@@ -1,20 +1,5 @@
 from utils import *
 
-# def test(word):
-# 	print(word)
-# greetings = [ "hello", "world", "cunt", "23"]
-
-# def validate_user(user):
-# 	if len(user) < 3 or user.isalnum() == False:
-# 		return False
-# 	return True
-
-# for word in greetings:
-# 	if not validate_user(word):
-# 		print(f"{word} is invalid")
-# 		continue
-# 	test(word)
-
 rfid_data = [
 		{ "id": 101, "location": "Gate A", "status": "active" },
 		{ "id": 102, "location": "ate B", "status": "active" },
