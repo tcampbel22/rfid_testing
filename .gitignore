@@ -1,2 +1,4 @@
 __pycache__/
 __pytestcache__/
+venv/
+*.db

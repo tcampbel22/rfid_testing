@@ -30,7 +30,7 @@ def check_status(status: str) -> bool:
 		return False
 	return True
 
-def validate_tag(tag: dict):
+def validate_tag(tag: dict) -> list:
 	id, location,status = tag["id"], tag["location"], tag["status"]
 	if not check_key(id):
 		print(f"Invalid id: {id}")
