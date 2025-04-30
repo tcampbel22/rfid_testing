@@ -60,21 +60,26 @@ def add_tag():
         country_id = parsed_body["country_id"]
 
         with db_connection() as conn:
-            try:
-                check_id(conn, id, "rfid_tags")
-                check_id(conn, warehouse_id, "warehouses")
-                check_id(conn, country_id, "countries")
-            except DuplicateError as err:
-                return jsonify({'message': str(err)}), 409
-            except NotFoundError as err:
-                return jsonify({'message': str(err)}), 404
-            except ValueError as err:
-                return jsonify({'message': str(err)}), 400
-            execute_sql(conn, 'INSERT INTO rfid_tags (id, status, warehouse_id, country_id) VALUES (?, ?, ?, ?)', 
-                        (id, status, warehouse_id, country_id))
-            execute_sql(conn, 'UPDATE warehouses SET total_tags = total_tags + 1 WHERE id = ?', (warehouse_id,))
-        return jsonify({'message': 'Tag created successfully'}), 201
-    except sqlite3.Error as err:
+			try:
+				conn.execute('BEGIN TRANSACTION')
+				try:
+					check_id(conn, id, "rfid_tags")
+					check_id(conn, warehouse_id, "warehouses")
+					check_id(conn, country_id, "countries")
+				except DuplicateError as err:
+					return jsonify({'message': str(err)}), 409
+				except NotFoundError as err:
+					return jsonify({'message': str(err)}), 404
+				except ValueError as err:
+					return jsonify({'message': str(err)}), 400
+				execute_sql(conn, 'INSERT INTO rfid_tags (id, status, warehouse_id, country_id) VALUES (?, ?, ?, ?)', 
+							(id, status, warehouse_id, country_id))
+				execute_sql(conn, 'UPDATE warehouses SET total_tags = total_tags + 1 WHERE id = ?', (warehouse_id,))
+				return jsonify({'message': 'Tag created successfully'}), 201
+			except Exception as err:
+				conn.rollback()
+				raise err
+	except sqlite3.Error as err:
         print("Unexpected Error:")
         print(f"URL: {request.url}")
         print(f"Body: {request.get_json()}")
